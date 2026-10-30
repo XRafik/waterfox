@@ -237,7 +237,7 @@ class BaseCalculator {
     if (["-", "+"].includes(val)) {
       return 2;
     }
-    if (["*", "/", "÷", "×"].includes(val)) {
+    if (["*", "/", "÷", "×", "%"].includes(val)) {
       return 3;
     }
     if ("^" === val) {
@@ -248,7 +248,7 @@ class BaseCalculator {
   }
 
   isLeftAssociative(val) {
-    if (["-", "+", "*", "/", "÷", "×"].includes(val)) {
+    if (["-", "+", "*", "/", "÷", "×", "%"].includes(val)) {
       return true;
     }
     if ("^" === val) {
@@ -312,6 +312,7 @@ class BaseCalculator {
     "-": (a, b) => a - b,
     "/": (a, b) => a / b,
     "÷": (a, b) => a / b,
+    "%": (a, b) => a % b,
     "^": (a, b) => a ** b,
   };
 
@@ -325,7 +326,7 @@ class BaseCalculator {
         let op2 = stack.pop();
         let op1 = stack.pop();
         let result = this.evaluate[token](op1, op2);
-        if ((token == "/" || token == "÷") && op2 == 0) {
+        if ((token == "/" || token == "÷" || token == "%") && op2 == 0) {
           return UNDEFINED_VALUE;
         }
         if (isNaN(result) || !isFinite(result)) {
@@ -521,7 +522,7 @@ Parser.prototype = {
 export let Calculator = new BaseCalculator();
 
 Calculator.addNumberSystem({
-  isOperator: char => ["÷", "×", "-", "+", "*", "/", "^"].includes(char),
+  isOperator: char => ["÷", "×", "-", "+", "*", "/", "%", "^"].includes(char),
   isNumericToken: char => /^[0-9\.,]/.test(char),
   /**
    * parseFloat will only handle numbers that use periods as decimal
